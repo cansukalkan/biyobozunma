@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bozunma"
+version = "0.1.0"
+description = "Mikroskop Bozunma Analizi: Çatlak ve gözenek segmentasyonu, alan ölçümü ve kinetik bozunma analizi"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+license = { text = "BSD-3-Clause" }
+authors = [
+    { name = "Bozunma Ekibi" }
+]
+dependencies = [
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "pandas>=2.0.0",
+    "pillow>=10.0.0",
+    "opencv-python-headless>=4.8.0",
+    "scikit-image>=0.21.0",
+    "pyyaml>=6.0",
+    "statsmodels>=0.14.0",
+    "fastapi>=0.100.0",
+    "uvicorn>=0.23.0",
+    "python-multipart>=0.0.9",
+    "slowapi>=0.1.9",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+ml = [
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "ultralytics>=8.0.0",
+    "segmentation-models-pytorch>=0.3.3",
+    "onnxruntime>=1.15.0",
+]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.0",
+    "mypy>=1.5.0",
+    "bandit>=1.7.5",
+    "pip-audit>=2.6.0",
+    "pre-commit>=3.4.0",
+    "types-PyYAML",
+    "types-requests",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra -q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B"]
+ignore = ["B008"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true

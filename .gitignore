@@ -1,0 +1,54 @@
+# Git ignore rules for Bozunma Analizi
+
+# Global constraints: data/, models/, runs/ asla commit edilmez
+data/
+models/
+runs/
+demo_raw/
+demos/**/raw/
+
+# Ortam ve gizli değişkenler
+.env
+.env.local
+*.env
+
+# Python & Sanal Ortamlar
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Test & Kapsama & Lint
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# IDE & Sistem
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
