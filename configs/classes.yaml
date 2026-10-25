@@ -1,0 +1,25 @@
+# CrackenPy ve Bozunma Analizi Sınıf Yapılandırması
+
+# Ham maske değerleri ve karşılık gelen adlar
+raw_classes:
+  0: background
+  1: matrix
+  2: crack
+  3: pore
+
+# Model eğitimi ve segmentasyon için hedef sınıflar
+target_classes:
+  crack: 0
+  pore: 1
+
+# Ham maske değerlerinin hedef YOLO sınıf kimliklerine eşlenmesi
+raw_to_target:
+  2: 0  # crack -> 0
+  3: 1  # pore -> 1
+
+# Görselleştirme renkleri (RGB formatında)
+class_colors:
+  crack: [255, 50, 50]    # Kırmızı
+  pore: [50, 150, 255]    # Mavi
+  matrix: [180, 180, 180] # Gri
+  background: [0, 0, 0]   # Siyah

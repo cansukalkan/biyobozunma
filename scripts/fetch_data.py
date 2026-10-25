@@ -2,10 +2,9 @@
 
 import argparse
 import hashlib
-import io
-from pathlib import Path
 import urllib.request
-import numpy as np
+from pathlib import Path
+
 from PIL import Image
 
 RAW_REPO_BASE = "https://raw.githubusercontent.com/Rievil/CrackenPy/main"

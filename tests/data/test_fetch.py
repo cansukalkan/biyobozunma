@@ -2,7 +2,7 @@
 
 import hashlib
 from pathlib import Path
-import pytest
+
 from bozunma.data.fetch import sha256_file, verify_checksums
 
 
