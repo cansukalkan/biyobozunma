@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mikroskop Bozunma Analizi - Sprint 0 Demosu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-crack: #ef4444;
+      --accent-pore: #38bdf8;
+      --accent-matrix: #94a3b8;
+      --badge-bg: #0284c7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1.5rem;
+    }
+    .header {
+      max-width: 1200px;
+      margin: 0 auto 2.5rem;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(2, 132, 199, 0.2);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      background: rgba(30, 41, 59, 0.7);
+      padding: 0.35rem 0.85rem;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .dot.crack { background: var(--accent-crack); box-shadow: 0 0 8px var(--accent-crack); }
+    .dot.pore { background: var(--accent-pore); box-shadow: 0 0 8px var(--accent-pore); }
+    .dot.matrix { background: var(--accent-matrix); }
+    
+    .grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .card:hover {
+      border-color: #38bdf8;
+    }
+    .card-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .card-tag {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.6);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+    .card-image {
+      width: 100%;
+      display: block;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="badge">Sprint 0 Demosu</span>
+    <h1>Mikroskop Bozunma Analizi</h1>
+    <p class="subtitle">CrackenPy veri setinden gerçek mikroskop yüzey görüntüleri, zemin gerçeği maskeleri ve renkli segmentasyon bindirmeleri.</p>
+    <div class="legend">
+      <div class="legend-item"><span class="dot crack"></span> Çatlak (Crack) - Sınıf 2</div>
+      <div class="legend-item"><span class="dot pore"></span> Gözenek (Pore) - Sınıf 3</div>
+      <div class="legend-item"><span class="dot matrix"></span> Matris (Matrix) - Sınıf 1</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Örnek 01: Numune ID14 (470. Saat) - Alt Bölge 1</span>
+        <span class="card-tag">256x256 px</span>
+      </div>
+      <img class="card-image" src="overlay_01.png" alt="Örnek 01">
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Örnek 02: Numune ID14 (470. Saat) - Alt Bölge 2</span>
+        <span class="card-tag">256x256 px</span>
+      </div>
+      <img class="card-image" src="overlay_02.png" alt="Örnek 02">
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Örnek 03: Numune ID14 (470. Saat) - Alt Bölge 3</span>
+        <span class="card-tag">256x256 px</span>
+      </div>
+      <img class="card-image" src="overlay_03.png" alt="Örnek 03">
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Örnek 04: Numune ID14 (470. Saat) - Alt Bölge 4</span>
+        <span class="card-tag">256x256 px</span>
+      </div>
+      <img class="card-image" src="overlay_04.png" alt="Örnek 04">
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Örnek 05: Numune ID14 (470. Saat) - Alt Bölge 5</span>
+        <span class="card-tag">256x256 px</span>
+      </div>
+      <img class="card-image" src="overlay_05.png" alt="Örnek 05">
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Örnek 06: Numune ID14 (470. Saat) - Alt Bölge 6</span>
+        <span class="card-tag">256x256 px</span>
+      </div>
+      <img class="card-image" src="overlay_06.png" alt="Örnek 06">
+    </div>
+  </div>
+</body>
+</html>

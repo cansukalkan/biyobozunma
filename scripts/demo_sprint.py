@@ -72,7 +72,7 @@ def create_side_by_side(
 
     # Etiketler
     draw.text((10, 12), f"{title} - Orijinal", fill=(220, 220, 220))
-    draw.text((w + 15, 12), "Maske (Kırmızı: Çatlak, Mavi: Gözenek)", fill=(220, 220, 220))
+    draw.text((w + 15, 12), "Maske (Kirmizi: Catlak, Mavi: Gozenek)", fill=(220, 220, 220))
     draw.text((w * 2 + 20, 12), "Bindirme (Overlay)", fill=(220, 220, 220))
 
     return canvas
