@@ -1,11 +1,11 @@
 # Git ignore rules for Bozunma Analizi
 
-# Global constraints: data/, models/, runs/ asla commit edilmez
-data/
-models/
-runs/
-demo_raw/
-demos/**/raw/
+# Global constraints: /data/, /models/, /runs/ asla commit edilmez
+/data/
+/models/
+/runs/
+/demo_raw/
+/demos/**/raw/
 
 # Ortam ve gizli değişkenler
 .env
