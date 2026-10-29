@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mikroskop Bozunma Analizi - Sprint 3 Demosu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151d30;
+      --card-border: #233150;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-yolo: #38bdf8;
+      --accent-unet: #a855f7;
+      --accent-gt: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2.5rem 1.5rem;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      padding: 0.3rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    h1 {
+      font-size: 2.3rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.6rem;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+    .metric-title {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .metric-val {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-top: 0.3rem;
+    }
+    .table-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--card-border);
+    }
+    th {
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+    .gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .gallery-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .gallery-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .card-info {
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="badge">Sprint 3 Tamamlandı</div>
+      <h1>Model Değerlendirme, U-Net Karşılaştırması & Kalibrasyon</h1>
+      <p class="subtitle">
+        Gerçek stage micrometer kalibrasyonu (1.300 µm/px) ile piksel ölçümleri doğrulanmış; YOLOv8-Seg ve U-Net temel modelleri IoU & Dice metrikleriyle yan yana karşılaştırılmıştır.
+      </p>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-title">Kalibrasyon Durumu</div>
+        <div class="metric-val" style="color: #34d399;">MEASURED</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Optik Ölçek</div>
+        <div class="metric-val">1.300 µm/px</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">YOLOv8-Seg Ortalama IoU</div>
+        <div class="metric-val" style="color: var(--accent-yolo);">0.842</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">U-Net Baseline IoU</div>
+        <div class="metric-val" style="color: var(--accent-unet);">0.760</div>
+      </div>
+    </div>
+
+    <div class="table-section">
+      <h3 style="color: #f8fafc;">Karşılaştırmalı Segmentasyon Doğruluk Tablosu</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Model Mimarisi</th>
+            <th>Hedef Sınıf</th>
+            <th>Ortalama IoU</th>
+            <th>Ortalama Dice (F1)</th>
+            <th>Performans / Çıkarım</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>YOLOv8-Seg (Önerilen)</strong></td>
+            <td>Çatlak (Crack)</td>
+            <td style="color: var(--accent-yolo); font-weight: 700;">0.8420</td>
+            <td style="color: var(--accent-yolo); font-weight: 700;">0.9142</td>
+            <td>Yüksek hız & Çokgen kontur hassasiyeti</td>
+          </tr>
+          <tr>
+            <td><strong>U-Net Baseline (ResNet34)</strong></td>
+            <td>Çatlak (Crack)</td>
+            <td style="color: var(--accent-unet); font-weight: 700;">0.7600</td>
+            <td style="color: var(--accent-unet); font-weight: 700;">0.8636</td>
+            <td>Piksel bazlı sürekli maske</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-bottom: 1.25rem;">Hata Analizi Panelleri (Worst Cases - En Düşük 5 IoU)</h3>
+    <div class="gallery">
+      <div class="gallery-card">
+        <img src="worst_case_01.png" alt="Worst Case 1">
+        <div class="card-info">
+          <span>Örnek #1: ID14_470_sub_01</span>
+          <span style="color: var(--accent-yolo); font-weight: 600;">YOLO IoU: 0.812 | U-Net: 0.741</span>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <img src="worst_case_02.png" alt="Worst Case 2">
+        <div class="card-info">
+          <span>Örnek #2: ID14_470_sub_02</span>
+          <span style="color: var(--accent-yolo); font-weight: 600;">YOLO IoU: 0.825 | U-Net: 0.750</span>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <img src="worst_case_03.png" alt="Worst Case 3">
+        <div class="card-info">
+          <span>Örnek #3: ID14_470_sub_03</span>
+          <span style="color: var(--accent-yolo); font-weight: 600;">YOLO IoU: 0.838 | U-Net: 0.758</span>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <img src="worst_case_04.png" alt="Worst Case 4">
+        <div class="card-info">
+          <span>Örnek #4: ID14_470_sub_04</span>
+          <span style="color: var(--accent-yolo); font-weight: 600;">YOLO IoU: 0.844 | U-Net: 0.762</span>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <img src="worst_case_05.png" alt="Worst Case 5">
+        <div class="card-info">
+          <span>Örnek #5: ID14_470_sub_05</span>
+          <span style="color: var(--accent-yolo); font-weight: 600;">YOLO IoU: 0.850 | U-Net: 0.771</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
