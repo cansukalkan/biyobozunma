@@ -1,8 +1,9 @@
 # Git ignore rules for Bozunma Analizi
 
-# Global constraints: /data/, /models/, /runs/ asla commit edilmez
+# Global constraints: /data/, /models/, /runs/ asla commit edilmez (yalnızca manifest özetleri hariç)
 /data/
-/models/
+/models/*
+!/models/*.sha256
 /runs/
 /demo_raw/
 /demos/**/raw/
