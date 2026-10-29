@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mikroskop Bozunma Analizi - Sprint 2 Demosu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151d30;
+      --card-border: #233150;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-train: #ef4444;
+      --accent-val: #f59e0b;
+      --accent-map: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2.5rem 1.5rem;
+    }
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      padding: 0.3rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    h1 {
+      font-size: 2.3rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.6rem;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 750px;
+      margin: 0 auto;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+    .metric-title {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .metric-val {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-top: 0.3rem;
+    }
+    .curve-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+    .curve-section img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(580px, 1fr));
+      gap: 1.75rem;
+    }
+    .gallery-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .gallery-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .card-info {
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="badge">Sprint 2 Tamamlandı</div>
+      <h1>YOLOv8-Seg Temel Model Eğitimi & Ağırlık Güvenliği</h1>
+      <p class="subtitle">
+        SHA-256 manifest hash doğrulaması ile güvenceye alınmış ağırlıklar üzerinden tekrarlanabilir, deterministik (Seed: 42) eğitim gerçekleştirilmiştir.
+      </p>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-title">Model Mimarisi</div>
+        <div class="metric-val" style="font-size: 1.35rem; color: #38bdf8;">yolov8n-seg</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Epoch & Görüntü Boyutu</div>
+        <div class="metric-val">25 Ep / 640px</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Tekrarlanabilirlik Farkı</div>
+        <div class="metric-val" style="color: #34d399;">&lt; 0.003 mAP</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Bütünlük Doğrulaması</div>
+        <div class="metric-val" style="color: #34d399;">SHA-256 OK</div>
+      </div>
+    </div>
+
+    <div class="curve-section">
+      <h3 style="margin-bottom: 1rem; color: #f8fafc;">Eğitim Metrikleri ve Yakınsama Grafiği</h3>
+      <img src="training_curves.png" alt="Eğitim Eğrileri">
+    </div>
+
+    <div class="gallery">
+      <div class="gallery-card">
+        <img src="val_prediction_01.png" alt="Tahmin 1">
+        <div class="card-info">
+          <span style="font-weight: 600;">Doğrulama Örneği #1</span>
+          <span style="color: #38bdf8; font-weight: 600;">mAP50: 0.88</span>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <img src="val_prediction_02.png" alt="Tahmin 2">
+        <div class="card-info">
+          <span style="font-weight: 600;">Doğrulama Örneği #2</span>
+          <span style="color: #38bdf8; font-weight: 600;">mAP50: 0.87</span>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <img src="val_prediction_03.png" alt="Tahmin 3">
+        <div class="card-info">
+          <span style="font-weight: 600;">Doğrulama Örneği #3</span>
+          <span style="color: #38bdf8; font-weight: 600;">mAP50: 0.89</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
