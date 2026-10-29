@@ -1,9 +1,9 @@
 """YOLO veri seti yazıcı testleri."""
 
 from pathlib import Path
+
 import numpy as np
 from PIL import Image
-import pytest
 
 from bozunma.data.writer import write_yolo_dataset
 
@@ -15,7 +15,7 @@ def test_write_yolo_dataset(tmp_path: Path) -> None:
 
     # 10 adet sentetik görüntü ve maske oluştur (2 farklı numune: ID1, ID2)
     raw_images: list[Path] = []
-    for s_idx, sample in enumerate(["ID1", "ID2"]):
+    for _s_idx, sample in enumerate(["ID1", "ID2"]):
         for i in range(5):
             img_path = raw_dir / f"{sample}_{i:02d}_Image.png"
             mask_path = raw_dir / f"{sample}_{i:02d}_Mask.png"
