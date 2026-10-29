@@ -1,7 +1,8 @@
 """YOLO segmentasyon veri seti yazıcısı modülü."""
 
-from pathlib import Path
 import shutil
+from pathlib import Path
+
 import numpy as np
 from PIL import Image
 

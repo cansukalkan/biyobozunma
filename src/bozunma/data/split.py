@@ -40,7 +40,8 @@ def split_by_sample(
 
     # 2. Numuneleri tohumlu olarak karıştır
     unique_samples = sorted(sample_to_files.keys())
-    rng = random.Random(seed)
+    # Veri seti bolme tohumu (kriptografik amacli degildir)
+    rng = random.Random(seed)  # nosec: B311
     rng.shuffle(unique_samples)
 
     n_samples = len(unique_samples)

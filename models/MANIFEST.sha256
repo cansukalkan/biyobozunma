@@ -1,6 +1,7 @@
 # Model Ağırlıkları SHA-256 Doğrulama Özeti Manifesti
 # Ultralytics resmi önceden eğitilmiş temel ağırlıkları ve eğitilen modeller
 # Not: Yalnızca özetler git deposuna girer, .pt dosyaları girmez.
-
 # yolov8n-seg.pt (Ultralytics v8.0 / v8.2 release)
 # resmi veya yerel indirilen hash eklenecektir
+3114a368bbe7f3b2ed40804c109496965233419247d44962956eb96dcb8be4f1  rf_pixel.joblib
+a1317a165efab749f4c1e998b36913299648704574d80f8a6e9ef924f7af5059  unet_baseline.pt

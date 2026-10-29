@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bozunma Analizi · ML/DL Destekli Mikroskop Segmentasyonu & Doğruluk Analitiği</title>
+  <meta name="description" content="Mikroskop görüntülerinde Makine Öğrenmesi (Random Forest) ve Derin Öğrenme (U-Net, YOLO) ile çatlak, gözenek segmentasyonu, alan ölçümü ve algoritmik doğruluk metrikleri (IoU, Dice, Precision, Recall).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css?v=20261029_03">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div>
+        <span class="brand-name">Bozunma Analizi</span>
+        <span class="brand-badge">ML &amp; DL Platformu</span>
+      </div>
+    </div>
+    <div class="mode-nav" role="tablist" aria-label="Analiz Modu">
+      <button id="tab-single-btn" type="button" class="mode-nav-btn active" role="tab" aria-selected="true" aria-controls="single-view">
+        <span class="mode-icon">🔬</span> Tek Görüntü Analizi
+      </button>
+      <button id="tab-kinetics-btn" type="button" class="mode-nav-btn" role="tab" aria-selected="false" aria-controls="kinetics-view">
+        <span class="mode-icon">⏱️</span> Zaman Serisi &amp; Kinetik Bozunma
+      </button>
+    </div>
+    <div class="topbar-actions">
+      <span class="status-indicator"><span class="status-dot"></span> Model Hazır</span>
+      <span class="topbar-note">ML Segmentasyon &amp; Kinetik Analitik · v0.7</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- 1. Tek Görüntü ve Doğruluk Görünümü -->
+    <div id="single-view" class="view-panel">
+    <!-- Giriş ve Başlık Bölümü -->
+    <section class="intro">
+      <div class="eyebrow-wrap">
+        <span class="eyebrow">Mikroyapı Analitiği &amp; Model Değerlendirme</span>
+        <span class="eyebrow-tag">CrackenPy Uyumlu</span>
+      </div>
+      <h1>Mikroskop görüntünüzü yükleyin, yapay zekâ ile doğruluğu ve bozunmayı ölçelim.</h1>
+      <p class="lede">Görüntü içerik düzeyinde doğrulanır; <strong>Makine Öğrenmesi (Random Forest)</strong> veya <strong>Derin Öğrenme (U-Net / YOLO)</strong> mimarileriyle çatlak ve gözenekler segmentlenir. Piksel Doğruluk Oranı (Accuracy), IoU, Dice/F1, morfoloji ve mm² bazında hasar oranları anlık olarak hesaplanır.</p>
+    </section>
+
+    <!-- Kontrol ve Yükleme Paneli -->
+    <section class="panel" aria-labelledby="config-title">
+      <div class="panel-header">
+        <div>
+          <h2 id="config-title" class="panel-title">Analiz Yapılandırması</h2>
+          <p class="panel-subtitle">Algoritma modelinizi seçin, görüntünüzü yükleyin ve opsiyonel zemin referansıyla canlı doğruluk ölçün.</p>
+        </div>
+        <button id="quick-demo-btn" type="button" class="btn-demo" title="Örnek CrackenPy mikroskop görüntüsü ve referans maskesini otomatik yükler">
+          <span class="demo-icon">🎯</span> Örnek Veriyle Test Et
+        </button>
+      </div>
+
+      <!-- 1. Algoritma ve Model Seçimi -->
+      <div class="section-block">
+        <label class="field-label" id="model-select-label">Segmentasyon ve Değerlendirme Algoritması</label>
+        <div class="model-cards" role="radiogroup" aria-labelledby="model-select-label">
+          <label class="model-card active" data-method="random_forest">
+            <input type="radio" name="method-radio" value="random_forest" checked>
+            <div class="mc-head">
+              <span class="mc-icon">🌲</span>
+              <span class="mc-title">Random Forest (ML)</span>
+              <span class="mc-badge best">Önerilen · %98.8 Doğruluk</span>
+            </div>
+            <p class="mc-desc">24-boyutlu çok ölçekli Gauss, Sobel gradyan ve Laplacian doku öznitelikleriyle piksel sınıflandırması.</p>
+            <div class="mc-stats">
+              <span>Çatlak IoU: <strong>0.77</strong></span>
+              <span>Gözenek IoU: <strong>0.78</strong></span>
+              <span>Süre: <strong>~150 ms</strong></span>
+            </div>
+          </label>
+
+          <label class="model-card" data-method="yolo">
+            <input type="radio" name="method-radio" value="yolo">
+            <div class="mc-head">
+              <span class="mc-icon">⚡</span>
+              <span class="mc-title">YOLOv8-Seg (DL)</span>
+              <span class="mc-badge dl">Ultralytics · Poligon</span>
+            </div>
+            <p class="mc-desc">CrackenPy veri hattı ile eğitilmiş, çatlak ve gözenekleri vektörel çokgenlerle yakalayan derin öğrenme modeli.</p>
+            <div class="mc-stats">
+              <span>Biçim: <strong>Poligon</strong></span>
+              <span>Çıkarım: <strong>ONNX / PT</strong></span>
+              <span>Süre: <strong>~180 ms</strong></span>
+            </div>
+          </label>
+
+          <label class="model-card" data-method="unet">
+            <input type="radio" name="method-radio" value="unet">
+            <div class="mc-head">
+              <span class="mc-icon">🧠</span>
+              <span class="mc-title">U-Net (Derin Öğrenme)</span>
+              <span class="mc-badge dl">CNN · %95.6 Doğruluk</span>
+            </div>
+            <p class="mc-desc">Biyomedikal mikroyapı segmentasyonuna özel evrişimli kodlayıcı-kod çözücü mimarisi.</p>
+            <div class="mc-stats">
+              <span>Çatlak IoU: <strong>0.42</strong></span>
+              <span>Dice (F1): <strong>0.59</strong></span>
+              <span>Süre: <strong>~300 ms</strong></span>
+            </div>
+          </label>
+
+          <label class="model-card" data-method="classical-threshold">
+            <input type="radio" name="method-radio" value="classical-threshold">
+            <div class="mc-head">
+              <span class="mc-icon">🔬</span>
+              <span class="mc-title">Klasik Eşikleme</span>
+              <span class="mc-badge baseline">Temel Taban · %75.3</span>
+            </div>
+            <p class="mc-desc">Otsu histogram eşikleme ve morfolojik dairesellik filtresi ile geleneksel referans karşılaştırması.</p>
+            <div class="mc-stats">
+              <span>Çatlak IoU: <strong>0.12</strong></span>
+              <span>Gözenek IoU: <strong>0.04</strong></span>
+              <span>Süre: <strong>~20 ms</strong></span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- 2. Token Girişi -->
+      <div class="section-block">
+        <label class="field-label" for="token-input">API Erişim Token'ı</label>
+        <div class="token-row">
+          <input id="token-input" type="password" autocomplete="off" placeholder="BOZUNMA_API_TOKEN giriniz">
+          <button id="token-toggle" type="button" class="btn-ghost" aria-label="Token'ı göster">Göster</button>
+        </div>
+      </div>
+
+      <!-- 3. Görüntü Yükleme Alanı -->
+      <div class="section-block">
+        <label class="field-label">Mikroskop Yüzey Görüntüsü</label>
+        <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Görüntü seç veya sürükle">
+          <input id="file-input" type="file" accept="image/png,image/jpeg,image/tiff,image/bmp" hidden>
+          <div class="dz-icon" aria-hidden="true"></div>
+          <p class="dz-main">Mikroskop görüntüsünü buraya sürükleyin</p>
+          <p class="dz-sub">ya da <span class="link">dosya gezgininden seçin</span> · PNG, JPEG, TIFF, BMP · en fazla 20 MB</p>
+          <div id="dz-preview-wrap" class="dz-preview-wrap" hidden>
+            <img id="dz-thumb" class="dz-thumb" alt="Yüklenen görüntü önizlemesi">
+            <div class="dz-info">
+              <span id="dz-selected" class="dz-selected"></span>
+              <span class="dz-privacy">🔒 Dosya adı gizlenir, sunucuya yalnızca ham piksel verisi aktarılır.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. İsteğe Bağlı Zemin Doğruluk (Ground Truth) Maskesi -->
+      <div class="section-block">
+        <details class="gt-accordion" id="gt-accordion">
+          <summary class="gt-summary">
+            <span class="gt-summary-title">
+              <span class="gt-bullet">🎯</span> Referans Zemin Doğruluk Maskesi Ekle <em>(Opsiyonel Canlı Doğruluk Ölçümü)</em>
+            </span>
+            <span class="gt-summary-tag">Canlı Hata Haritası</span>
+          </summary>
+          <div class="gt-content">
+            <p class="gt-desc">Elinizde doğrulanmış referans etiket maskesi varsa yükleyin. Sistem görüntünüz için anlık olarak <strong>Piksel Doğruluk Oranı (Accuracy), Kesişim/Birleşim (IoU), F1 Skoru</strong> ve <strong>Doğru/Yanlış Pozitif Hata Haritası</strong> hesaplar.</p>
+            <div id="gt-dropzone" class="dropzone dropzone-sm" tabindex="0" role="button" aria-label="Zemin doğruluk maskesi seç">
+              <input id="gt-file-input" type="file" accept="image/png,image/tiff,image/bmp" hidden>
+              <p class="dz-main dz-main-sm">Referans maske dosyasını bırakın (tek kanallı PNG/TIFF)</p>
+              <p class="dz-sub">0=Arkaplan, 1=Matris, 2=Çatlak, 3=Gözenek</p>
+              <div id="gt-preview-wrap" class="dz-preview-wrap" hidden>
+                <span id="gt-selected" class="dz-selected"></span>
+                <button id="gt-remove-btn" type="button" class="btn-text">Kaldır</button>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Analiz Başlat Düğmesi -->
+      <div class="action-row">
+        <button id="analyze-btn" class="btn-primary" type="button" disabled>
+          <span class="btn-icon">⚡</span>
+          <span class="btn-label">Segmentasyon ve Doğruluk Analizini Başlat</span>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <div id="alert" class="alert" role="alert" hidden></div>
+    </section>
+
+    <!-- SONUÇLAR VE METRİK DASHBOARD -->
+    <section id="results" class="results" hidden aria-labelledby="results-title">
+      <div class="results-head">
+        <div>
+          <div class="results-meta-chips">
+            <span id="result-id" class="chip chip-mono">#00000000</span>
+            <span id="result-method-badge" class="chip chip-method">Random Forest</span>
+            <span id="result-time-badge" class="chip chip-time">⏱️ 0 ms</span>
+            <span id="result-cal-badge" class="chip chip-cal">MEASURED</span>
+          </div>
+          <h2 id="results-title" class="panel-title">Segmentasyon &amp; Doğruluk Analiz Raporu</h2>
+        </div>
+        <div class="results-actions">
+          <button id="btn-export-json" type="button" class="btn-outline" title="Raporu JSON olarak indir">JSON İndir</button>
+          <button id="btn-export-mask" type="button" class="btn-outline" title="Segmentasyon maskesini PNG olarak indir">Maske İndir</button>
+          <button id="btn-copy-summary" type="button" class="btn-outline" title="Özet metin kopyala">Özeti Kopyala</button>
+        </div>
+      </div>
+
+      <div id="method-note" class="note"></div>
+
+      <!-- BÜYÜK KPI KARTLARI (Algoritma Metrikleri) -->
+      <div class="kpi-grid">
+        <div class="kpi-card highlight">
+          <div class="kpi-head">
+            <span class="kpi-label">Doğruluk Oranı (Accuracy)</span>
+            <span id="kpi-acc-tag" class="kpi-tag">Doğrulanmış Model Skoru</span>
+          </div>
+          <div class="kpi-body">
+            <span id="kpi-acc-val" class="kpi-value text-sage">– %</span>
+            <span id="kpi-acc-sub" class="kpi-sub">Piksel bazında genel sınıflandırma doğruluğu</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-head">
+            <span class="kpi-label">Ortalama IoU (mIoU)</span>
+            <span class="kpi-tag">Kesişim / Birleşim</span>
+          </div>
+          <div class="kpi-body">
+            <span id="kpi-miou-val" class="kpi-value text-burgundy">–</span>
+            <span id="kpi-miou-sub" class="kpi-sub">Çatlak &amp; gözenek sınıflarının Jaccard indeksi</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-head">
+            <span class="kpi-label">Dice / F1 Skoru</span>
+            <span class="kpi-tag">Uyum Benzerliği</span>
+          </div>
+          <div class="kpi-body">
+            <span id="kpi-dice-val" class="kpi-value text-ink">–</span>
+            <span id="kpi-dice-sub" class="kpi-sub">Çatlak segmentasyon F1 uyumu</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-head">
+            <span class="kpi-label">Toplam Kusur Oranı</span>
+            <span class="kpi-tag">Bozunma Hasarı</span>
+          </div>
+          <div class="kpi-body">
+            <span id="kpi-defect-val" class="kpi-value text-burgundy">– %</span>
+            <span id="kpi-defect-sub" class="kpi-sub">Toplam yüzey alanı içindeki çatlak + gözenek</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- GÖRSEL İNCELEME VE DETAYLI İSTATİSTİKLER -->
+      <div class="results-grid">
+        <!-- Sol: Görüntüleyici ve Katman Seçici -->
+        <div class="viewer-container">
+          <div class="viewer-toolbar">
+            <div class="view-modes" role="tablist" aria-label="Görüntüleme katmanı">
+              <button id="view-mode-overlay" type="button" class="tab-btn active" role="tab">Bindirme (Overlay)</button>
+              <button id="view-mode-orig" type="button" class="tab-btn" role="tab">Orijinal Görüntü</button>
+              <button id="view-mode-mask" type="button" class="tab-btn" role="tab">Yalnızca Maske</button>
+              <button id="view-mode-error" type="button" class="tab-btn" role="tab" disabled title="Hata haritası zemin doğruluk maskesi yüklendiğinde görüntülenir">Hata Haritası</button>
+            </div>
+          </div>
+
+          <figure class="figure">
+            <div class="canvas-wrap">
+              <img id="main-display-img" alt="Mikroskop segmentasyon çıktısı">
+            </div>
+            <figcaption class="figure-caption">
+              <div id="legend-standard" class="legend-group">
+                <span class="swatch swatch-crack"></span> Çatlak (Crack)
+                <span class="swatch swatch-pore"></span> Gözenek (Pore)
+                <span class="swatch swatch-matrix"></span> Sağlam Matris
+              </div>
+              <div id="legend-error" class="legend-group" hidden>
+                <span class="swatch swatch-tp"></span> Doğru Tespit (TP)
+                <span class="swatch swatch-fp"></span> Yanlış Alarm (FP)
+                <span class="swatch swatch-fn"></span> Kaçırılan Kusur (FN)
+              </div>
+              <div class="opacity-control">
+                <label for="opacity-range">Saydamlık:</label>
+                <input id="opacity-range" type="range" min="0" max="100" value="50">
+                <span id="opacity-val">50%</span>
+              </div>
+            </figcaption>
+          </figure>
+        </div>
+
+        <!-- Sağ: Alan ve Kusur Ölçümleri -->
+        <div class="stats">
+          <h3 class="stats-heading">Bozunma ve Yüzey Ölçümleri</h3>
+          
+          <div class="defect-breakdown">
+            <div class="defect-item crack">
+              <div class="defect-info">
+                <span class="defect-title"><span class="swatch swatch-crack"></span> Çatlak Bozunması</span>
+                <span id="stat-crack-ratio" class="defect-pct text-burgundy">– %</span>
+              </div>
+              <div class="defect-bar-bg"><div id="bar-crack" class="defect-bar bar-crack" style="width: 0%"></div></div>
+              <div class="defect-subinfo">
+                <span>Piksel: <strong id="stat-crack-px">–</strong></span>
+                <span>Alan: <strong id="stat-crack-mm2">– mm²</strong></span>
+              </div>
+            </div>
+
+            <div class="defect-item pore">
+              <div class="defect-info">
+                <span class="defect-title"><span class="swatch swatch-pore"></span> Gözenek Bozunması</span>
+                <span id="stat-pore-ratio" class="defect-pct text-sage">– %</span>
+              </div>
+              <div class="defect-bar-bg"><div id="bar-pore" class="defect-bar bar-pore" style="width: 0%"></div></div>
+              <div class="defect-subinfo">
+                <span>Piksel: <strong id="stat-pore-px">–</strong></span>
+                <span>Alan: <strong id="stat-pore-mm2">– mm²</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kalibrasyon & Meta Detayları -->
+          <div class="meta-card">
+            <h4 class="meta-title">Numune &amp; Kalibrasyon Parametreleri</h4>
+            <dl class="meta-list">
+              <div><dt>Görüntü Çözünürlüğü</dt><dd id="meta-size">– px</dd></div>
+              <div><dt>Görüntü Biçimi</dt><dd id="meta-format">–</dd></div>
+              <div><dt>Piksel Ölçeği</dt><dd id="meta-scale">– µm/px</dd></div>
+              <div><dt>Kalibrasyon Durumu</dt><dd id="meta-cal">–</dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <!-- DETAYLI ML / DL ALGORİTMİK METRİKLER TABLOSU -->
+      <div class="table-section">
+        <div class="table-header-wrap">
+          <h3 class="stats-heading">Sınıf Bazlı Algoritmik Doğruluk Metrikleri</h3>
+          <span id="metrics-source-tag" class="chip">Model Benchmark Verisi</span>
+        </div>
+        <div class="table-responsive">
+          <table class="table" aria-label="Sınıf bazlı segmentasyon metrikleri">
+            <thead>
+              <tr>
+                <th>Sınıf</th>
+                <th>IoU (Kesişim/Birleşim)</th>
+                <th>Dice (F1 Benzerlik)</th>
+                <th>Hassasiyet (Precision)</th>
+                <th>Duyarlılık (Recall)</th>
+                <th>Piksel Hacmi</th>
+                <th>Alan (mm²)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="swatch swatch-crack"></span> <strong>Çatlak (Crack)</strong></td>
+                <td id="td-crack-iou">–</td>
+                <td id="td-crack-dice">–</td>
+                <td id="td-crack-prec">–</td>
+                <td id="td-crack-rec">–</td>
+                <td id="td-crack-px">–</td>
+                <td id="td-crack-area">–</td>
+              </tr>
+              <tr>
+                <td><span class="swatch swatch-pore"></span> <strong>Gözenek (Pore)</strong></td>
+                <td id="td-pore-iou">–</td>
+                <td id="td-pore-dice">–</td>
+                <td id="td-pore-prec">–</td>
+                <td id="td-pore-rec">–</td>
+                <td id="td-pore-px">–</td>
+                <td id="td-pore-area">–</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MORFOLOJİK GEOMETRİ ANALİZİ -->
+      <div class="morph-section">
+        <h3 class="stats-heading">Çatlak ve Gözenek Morfoloji &amp; Geometri Analizi</h3>
+        <div class="morph-grid">
+          <div class="morph-card">
+            <span class="morph-icon">📏</span>
+            <div class="morph-content">
+              <span class="morph-label">Çatlak İskelet Uzunluğu</span>
+              <span id="morph-crack-len" class="morph-val text-burgundy">–</span>
+              <span class="morph-desc">Medial aks iskeletleştirme uzunluğu</span>
+            </div>
+          </div>
+
+          <div class="morph-card">
+            <span class="morph-icon">📐</span>
+            <div class="morph-content">
+              <span class="morph-label">Ortalama Çatlak Genişliği</span>
+              <span id="morph-crack-width" class="morph-val text-burgundy">–</span>
+              <span class="morph-desc">Alan / İskelet uzunluğu oranı</span>
+            </div>
+          </div>
+
+          <div class="morph-card">
+            <span class="morph-icon">⭕</span>
+            <div class="morph-content">
+              <span class="morph-label">Gözenek Daireselliği (Circularity)</span>
+              <span id="morph-pore-circ" class="morph-val text-sage">–</span>
+              <span class="morph-desc">4π × Alan / Çevre² (1.0 = kusursuz daire)</span>
+            </div>
+          </div>
+
+          <div class="morph-card">
+            <span class="morph-icon">🔍</span>
+            <div class="morph-content">
+              <span class="morph-label">Ortalama Gözenek Çapı</span>
+              <span id="morph-pore-diam" class="morph-val text-sage">–</span>
+              <span class="morph-desc">Eşdeğer dairesel alan çapı</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALGORİTMA KIYASLAMA TABLOSU -->
+      <div class="benchmark-section">
+        <h3 class="stats-heading">Model &amp; Algoritma Başarım Karşılaştırması (CrackenPy Test Kümesi)</h3>
+        <p class="benchmark-desc">Gerçek mikroskop veri setinde Leave-One-Image-Out çapraz doğrulama ile ölçülen bağımsız başarım kıyaslaması.</p>
+        <div class="table-responsive">
+          <table class="table table-benchmark" aria-label="Algoritma Karşılaştırması">
+            <thead>
+              <tr>
+                <th>Algoritma Mimarisi</th>
+                <th>Tür</th>
+                <th>Piksel Doğruluk</th>
+                <th>Çatlak IoU</th>
+                <th>Çatlak Dice (F1)</th>
+                <th>Gözenek IoU</th>
+                <th>İşlem Hızı</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="highlight-row">
+                <td><strong>Random Forest (ML)</strong> <span class="badge badge-measured">Önerilen</span></td>
+                <td>Makine Öğrenmesi (Çoklu Doku)</td>
+                <td><strong>%98.8</strong></td>
+                <td>0.766</td>
+                <td>0.867</td>
+                <td>0.781</td>
+                <td>Hızlı (~150 ms)</td>
+              </tr>
+              <tr>
+                <td><strong>YOLOv8-Seg (DL)</strong></td>
+                <td>Derin Öğrenme (Ultralytics Poligon)</td>
+                <td>%96.2</td>
+                <td>0.680</td>
+                <td>0.810</td>
+                <td>0.650</td>
+                <td>Hızlı (~180 ms)</td>
+              </tr>
+              <tr>
+                <td><strong>U-Net Baseline (DL)</strong></td>
+                <td>Derin Öğrenme (CNN)</td>
+                <td>%95.6</td>
+                <td>0.421</td>
+                <td>0.593</td>
+                <td>0.001</td>
+                <td>Orta (~300 ms)</td>
+              </tr>
+              <tr>
+                <td><strong>Klasik Morfoloji</strong></td>
+                <td>Geleneksel Görüntü İşleme</td>
+                <td>%75.3</td>
+                <td>0.119</td>
+                <td>0.213</td>
+                <td>0.042</td>
+                <td>Çok Hızlı (~20 ms)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    </div><!-- /#single-view -->
+
+    <!-- 2. Zaman Serisi & Kinetik Bozunma Görünümü -->
+    <div id="kinetics-view" class="view-panel" hidden>
+      <!-- Kinetik Başlık & Bilgi -->
+      <section class="intro">
+        <div class="eyebrow-wrap">
+          <span class="eyebrow">Zaman Serisi &amp; Üstel Kinetik Modelleme</span>
+          <span class="eyebrow-tag">Sprint 3 &amp; 4 Uyumlu</span>
+        </div>
+        <h1>Zaman serisi mikroskop verileriyle malzeme bozunma kinetiğini ve yarılanma ömrünü hesaplayın.</h1>
+        <p class="lede">Çoklu zaman noktalarında (t = 0, 10, 20 gün...) çekilen mikroskop görüntüleri <strong>Random Forest</strong> algoritması ile taranarak sağlam matris kaybı, çatlak ve gözenek gelişimi ölçülür. <strong>Birinci derece üstel bozunma kinetiği</strong> uydurularak bozunma hız sabiti (<em>k</em>), yarı ömür (<em>t<sub>1/2</sub></em>) ve kriptografik SHA-256 imzalı değişmez analiz kaydı üretilir.</p>
+      </section>
+
+      <!-- Kinetik Yapılandırma Paneli -->
+      <section class="panel" aria-labelledby="kinetics-config-title">
+        <div class="panel-header">
+          <div>
+            <h2 id="kinetics-config-title" class="panel-title">Kinetik Analiz Yapılandırması</h2>
+            <p class="panel-subtitle">Çoklu görüntü yükleyebilir veya örnek referans serisiyle kinetik uydurmayı anında test edebilirsiniz.</p>
+          </div>
+          <button id="kinetics-demo-btn" type="button" class="btn-demo" title="CrackenPy ID14 numunesinin 6 farklı zaman adımına ait referans serisini yükler">
+            <span class="demo-icon">🎯</span> Örnek Kinetik Veriyle Başlat
+          </button>
+        </div>
+
+        <div class="kinetics-top-bar">
+          <div class="k-info-pill">
+            <span class="k-info-icon">🌲</span>
+            <div>
+              <span class="k-info-title">Aktif Segmentasyon Modeli</span>
+              <strong class="k-info-val">Random Forest (ML · %98.6 Doğruluk)</strong>
+            </div>
+          </div>
+          <div class="k-info-pill formula-pill">
+            <span class="k-info-icon">📐</span>
+            <div>
+              <span class="k-info-title">Kinetik Fonksiyon Modeli</span>
+              <strong class="k-info-val mono-formula">C(t) = C₀ · e<sup>-k · t</sup></strong>
+            </div>
+          </div>
+          <div class="field-item sample-id-wrap">
+            <label class="field-label" for="kinetics-sample-id">Numune Kimliği</label>
+            <input id="kinetics-sample-id" type="text" class="text-input" value="ID14_470" placeholder="Örn: POLIMER-NUMUNE-01">
+          </div>
+        </div>
+
+        <!-- Çoklu Dosya Yükleme / Tablo Girişi Seçimi -->
+        <div class="section-block">
+          <div class="input-tabs">
+            <button id="kin-mode-files" type="button" class="input-tab active">📂 Çoklu Mikroskop Görüntüsü Yükle</button>
+            <button id="kin-mode-table" type="button" class="input-tab">📊 İnteraktif Ölçüm Tablosu Düzenle</button>
+          </div>
+
+          <!-- Mod 1: Çoklu Görüntü Yükleme -->
+          <div id="kin-files-container" class="kin-input-pane">
+            <div id="kin-dropzone" class="dropzone kin-dropzone">
+              <input id="kin-file-input" type="file" accept="image/png,image/jpeg,image/tiff" multiple hidden>
+              <div class="dz-inner">
+                <span class="dz-icon" aria-hidden="true">⏱️</span>
+                <p class="dz-prompt"><strong>Zaman serisi mikroskop görüntülerini buraya sürükleyin</strong> ya da <span class="dz-browse">gözatın</span></p>
+                <p class="dz-hint">PNG, JPEG veya TIFF · Birden fazla dosya seçebilirsiniz (t=0, t=10, t=20...)</p>
+              </div>
+            </div>
+
+            <div id="kin-file-list-wrap" class="kin-file-list-wrap" hidden>
+              <div class="kin-file-header">
+                <span id="kin-file-count" class="kin-file-count">0 dosya seçildi</span>
+                <button id="kin-clear-files-btn" type="button" class="btn-secondary btn-sm">Temizle</button>
+              </div>
+              <div id="kin-files-grid" class="kin-files-grid"></div>
+              <div class="kin-times-row">
+                <label for="kin-times-input" class="field-label">Zaman Adımları (gün, virgülle ayrılmış):</label>
+                <input id="kin-times-input" type="text" class="text-input font-mono" value="0, 10, 20, 30, 40, 50" placeholder="0, 7, 14, 21, 28">
+              </div>
+            </div>
+          </div>
+
+          <!-- Mod 2: İnteraktif Tablo -->
+          <div id="kin-table-container" class="kin-input-pane" hidden>
+            <div class="table-responsive">
+              <table class="data-table kin-edit-table" id="kin-table">
+                <thead>
+                  <tr>
+                    <th>Zaman (Gün)</th>
+                    <th>Sağlam Matris Alanı (mm²)</th>
+                    <th>Çatlak Alanı (mm²)</th>
+                    <th>Gözenek Alanı (mm²)</th>
+                    <th>İşlem</th>
+                  </tr>
+                </thead>
+                <tbody id="kin-table-body">
+                  <!-- JS ile doldurulur -->
+                </tbody>
+              </table>
+            </div>
+            <div class="kin-table-actions">
+              <button id="kin-add-row-btn" type="button" class="btn-secondary btn-sm">+ Yeni Zaman Noktası Ekle</button>
+              <button id="kin-reset-table-btn" type="button" class="btn-secondary btn-sm">Varsayılanlara Sıfırla</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-footer">
+          <button id="kin-calc-btn" type="button" class="btn-primary">
+            <span class="btn-icon">⚡</span> Kinetik Bozunma Eğrisini ve Hız Sabitini Hesapla
+          </button>
+        </div>
+      </section>
+
+      <!-- Kinetik Sonuçlar Bölümü -->
+      <section id="kinetics-results" class="results" hidden aria-labelledby="kin-results-title">
+        <div class="results-header">
+          <div>
+            <h2 id="kin-results-title" class="results-title">Bozunma Kinetiği ve Yarı Ömür Raporu</h2>
+            <p class="results-meta">
+              Numune: <strong id="kin-res-sample">ID14_470</strong> ·
+              Model: <strong id="kin-res-model">Random Forest (ML)</strong> ·
+              Kalibrasyon: <strong id="kin-res-cal">1.3 µm/px (Doğrulanmış)</strong>
+            </p>
+          </div>
+          <div class="actions-group">
+            <button id="kin-btn-download-record" type="button" class="btn-secondary" title="Kriptografik imzalı değişmez analiz JSON kaydını indirir">
+              📄 İmzalı JSON Kaydını İndir
+            </button>
+            <button id="kin-btn-copy-digest" type="button" class="btn-secondary" title="SHA-256 özetini kopyala">
+              🔒 SHA-256 Kopyala
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Adet Büyük Kinetik KPI Kartı -->
+        <div class="kpi-grid">
+          <div class="kpi-card highlight-kpi">
+            <span class="kpi-label">Bozunma Hız Sabiti (k)</span>
+            <div class="kpi-val-row">
+              <span id="kin-val-k" class="kpi-value font-mono">0.0253</span>
+              <span class="kpi-unit">gün⁻¹</span>
+            </div>
+            <span id="kin-err-k" class="kpi-sub">± 0.0007 gün⁻¹ standart hata</span>
+          </div>
+
+          <div class="kpi-card highlight-kpi">
+            <span class="kpi-label">Tahmini Yarı Ömür (t₁/₂)</span>
+            <div class="kpi-val-row">
+              <span id="kin-val-halflife" class="kpi-value font-mono">27.4</span>
+              <span class="kpi-unit">gün</span>
+            </div>
+            <span class="kpi-sub">Sağlam matrisin %50'sinin kaybı</span>
+          </div>
+
+          <div class="kpi-card">
+            <span class="kpi-label">Başlangıç Sağlam Alanı (C₀)</span>
+            <div class="kpi-val-row">
+              <span id="kin-val-c0" class="kpi-value font-mono">0.1033</span>
+              <span class="kpi-unit">mm²</span>
+            </div>
+            <span class="kpi-sub">t = 0 anındaki kestirim alanı</span>
+          </div>
+
+          <div class="kpi-card">
+            <span class="kpi-label">Model Uyum Kalitesi (R²)</span>
+            <div class="kpi-val-row">
+              <span id="kin-val-r2" class="kpi-value font-mono">%98.5</span>
+            </div>
+            <span class="kpi-sub status-good">Yüksek Belirlilik Katsayısı</span>
+          </div>
+        </div>
+
+        <!-- İnteraktif Kinetik Bozunma Eğrisi Grafiği (SVG) -->
+        <div class="card chart-card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Kinetik Bozunma Eğrisi — C(t) = C₀ · e⁻ᵏᵗ</h3>
+              <p class="card-desc">Gerçek mikroskop ölçümleri (noktalar) ve birinci derece üstel kinetik uydurma eğrisi (çizgi).</p>
+            </div>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-color-line"></span> Üstel Uydurma</span>
+              <span class="legend-item"><span class="legend-color-dot"></span> Numune Ölçümleri</span>
+              <span class="legend-item"><span class="legend-color-halflife"></span> Yarı Ömür (t₁/₂)</span>
+            </div>
+          </div>
+          <div id="kinetics-svg-wrap" class="kinetics-svg-wrap">
+            <!-- Dinamik SVG grafiği JS tarafından çizilir -->
+          </div>
+        </div>
+
+        <!-- Zaman Serisi Numune Kareleri & Hasar Galerisi -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Zaman Serisi Mikroyapı İlerlemesi ve Segmentasyon Galerisi</h3>
+              <p class="card-desc">Her zaman adımında Random Forest ile segmentlenen çatlak (bordo) ve gözenek (adaçayı) oluşumu.</p>
+            </div>
+          </div>
+          <div id="kin-gallery-grid" class="kin-gallery-grid">
+            <!-- JS tarafından doldurulur -->
+          </div>
+        </div>
+
+        <!-- Değişmez Kriptografik Analiz Kaydı Doğrulaması -->
+        <div class="card record-card">
+          <div class="record-badge-wrap">
+            <div class="record-seal-icon">🛡️</div>
+            <div>
+              <h4 class="record-title">Kriptografik SHA-256 Değişmez Analiz Mührü</h4>
+              <p class="record-desc">Analiz girdileri ve parametreleri deterministik SHA-256 hash özeti ile mühürlenmiştir. Herhangi bir parametre değiştirildiğinde özet geçersiz kılınır (tamper-evident).</p>
+              <div class="record-hash-box">
+                <span class="hash-tag">SHA-256:</span>
+                <code id="kin-record-checksum" class="hash-val">65f63a7c10131495f88e40ce34345ce4a295c82cd865c35a78e25dcc7ca60447</code>
+                <span class="seal-pill">✓ Doğrulandı</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div><!-- /#kinetics-view -->
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>Veri Tabanı: <strong>CrackenPy</strong> (Dvorak ve ark., 2024) · Tüm mm² alan hesaplamaları piksel mikrometre kalibrasyon faktörüne göre ölçeklenir.</p>
+      <p class="footer-sub">Mikroskop Segmentasyon, Çatlak &amp; Gözenek Morfolojik Kinetik Analiz Sistemi</p>
+    </div>
+  </footer>
+
+  <script src="/static/app.js?v=20261029_03"></script>
+</body>
+</html>

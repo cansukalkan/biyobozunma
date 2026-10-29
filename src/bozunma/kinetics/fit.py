@@ -1,7 +1,6 @@
 """Bozunma kinetiği ve birinci derece üstel uydurma modülü."""
 
 import numpy as np
-from scipy.optimize import curve_fit
 
 
 def exponential_decay(t: np.ndarray, c0: float, k: float) -> np.ndarray:
@@ -30,17 +29,41 @@ def fit_first_order(t: np.ndarray, c: np.ndarray) -> dict:
     if len(t_arr) < 2:
         raise ValueError("Uydurma için en az 2 veri noktası gereklidir.")
 
-    # Başlangıç parametre tahmini
-    c0_init = float(c_arr[0]) if len(c_arr) > 0 and c_arr[0] > 0 else 1.0
-    p0 = [c0_init, 0.01]
+    # Pozitif veri noktaları üzerinde log-lineer regresyon: ln(C) = ln(c0) - k * t
+    valid = c_arr > 0
+    if valid.sum() < 2:
+        p = np.polyfit(t_arr, c_arr, 1)
+        return {"c0": float(c_arr[0]), "k": max(0.0, float(-p[0])), "k_err": 0.0}
 
-    popt, pcov = curve_fit(exponential_decay, t_arr, c_arr, p0=p0, maxfev=10000)
+    t_v = t_arr[valid]
+    log_c = np.log(c_arr[valid])
 
-    perr = np.sqrt(np.diag(pcov))
-    k_err = float(perr[1]) if len(perr) > 1 and not np.isinf(perr[1]) else 0.0
+    if len(t_v) > 2:
+        poly, cov = np.polyfit(t_v, log_c, 1, cov=True)
+        k_err = float(np.sqrt(cov[0, 0])) if cov is not None else 0.0
+    else:
+        poly = np.polyfit(t_v, log_c, 1, cov=False)
+        cov = None
+        k_err = 0.0
+
+    slope = poly[0]
+    intercept = poly[1]
+
+    k = float(-slope)
+    c0 = float(np.exp(intercept))
+
+    # Tahmin edilen C(t) ve R^2 / t_1/2 hesaplama
+    c_pred = c0 * np.exp(-k * t_arr)
+    ss_res = float(np.sum((c_arr - c_pred) ** 2))
+    ss_tot = float(np.sum((c_arr - np.mean(c_arr)) ** 2))
+    r2 = 1.0 - (ss_res / ss_tot) if ss_tot > 0 else 1.0
+    half_life = float(np.log(2.0) / k) if k > 1e-9 else None
 
     return {
-        "c0": float(popt[0]),
-        "k": float(popt[1]),
+        "c0": c0,
+        "k": k,
         "k_err": k_err,
+        "r2": max(0.0, min(1.0, r2)),
+        "half_life_days": half_life,
     }
+

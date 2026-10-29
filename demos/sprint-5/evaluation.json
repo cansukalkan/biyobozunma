@@ -1,0 +1,190 @@
+{
+  "created_utc": "2026-10-29T09:13:34+00:00",
+  "protocol": "leave-one-image-out",
+  "n_images": 7,
+  "n_samples": 2,
+  "caveat": "Görüntülerin çoğu aynı numuneden alınmış alt kesitlerdir; bu nedenle sonuçlar yeni numunelere genelleme performansını olduğundan iyi gösterebilir. Küçük veri: metrikler ön değerlendirme niteliğindedir.",
+  "unet_iters": 600,
+  "methods": {
+    "classical": {
+      "per_class": {
+        "crack": {
+          "iou": 0.11905028057859554,
+          "dice": 0.2127702081751708,
+          "precision": 0.12479298815736024,
+          "recall": 0.7212189616252822,
+          "support_px": 22150
+        },
+        "pore": {
+          "iou": 0.04206587579911741,
+          "dice": 0.08073554038387222,
+          "precision": 0.045369817398700614,
+          "recall": 0.3661457572659559,
+          "support_px": 6847
+        }
+      },
+      "pixel_accuracy": 0.7530274586580444,
+      "confusion_matrix": [
+        [
+          0,
+          2106,
+          56354,
+          51530
+        ],
+        [
+          0,
+          514614,
+          53316,
+          1020
+        ],
+        [
+          0,
+          5975,
+          15975,
+          200
+        ],
+        [
+          0,
+          1973,
+          2367,
+          2507
+        ]
+      ],
+      "labels": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mean_iou_per_image": {
+        "crack": 0.29500942657866985,
+        "pore": 0.15622909603125865
+      },
+      "std_iou_per_image": {
+        "crack": 0.27998338912719495,
+        "pore": 0.23990593469016494
+      },
+      "seconds_total": 0.0
+    },
+    "random_forest": {
+      "per_class": {
+        "crack": {
+          "iou": 0.7425466893039049,
+          "dice": 0.8522545695467477,
+          "precision": 0.7497257268239166,
+          "recall": 0.9872686230248306,
+          "support_px": 22150
+        },
+        "pore": {
+          "iou": 0.7439198855507868,
+          "dice": 0.8531583264971287,
+          "precision": 0.7511111111111111,
+          "recall": 0.987293705272382,
+          "support_px": 6847
+        }
+      },
+      "pixel_accuracy": 0.9858292475177876,
+      "confusion_matrix": [
+        [
+          109874,
+          66,
+          38,
+          12
+        ],
+        [
+          299,
+          559403,
+          7175,
+          2073
+        ],
+        [
+          25,
+          102,
+          21868,
+          155
+        ],
+        [
+          0,
+          0,
+          87,
+          6760
+        ]
+      ],
+      "labels": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mean_iou_per_image": {
+        "crack": 0.6495357525759997,
+        "pore": 0.6338217753616971
+      },
+      "std_iou_per_image": {
+        "crack": 0.19365772598249523,
+        "pore": 0.21627418920942837
+      },
+      "seconds_total": 30.9
+    },
+    "unet": {
+      "per_class": {
+        "crack": {
+          "iou": 0.4089381223178234,
+          "dice": 0.5804912449172506,
+          "precision": 0.43472593657999414,
+          "recall": 0.8733182844243792,
+          "support_px": 22150
+        },
+        "pore": {
+          "iou": 0.33554845948045225,
+          "dice": 0.5024878836833603,
+          "precision": 0.4506258692628651,
+          "recall": 0.5678399298963049,
+          "support_px": 6847
+        }
+      },
+      "pixel_accuracy": 0.9522005489189009,
+      "confusion_matrix": [
+        [
+          107518,
+          736,
+          1698,
+          38
+        ],
+        [
+          1709,
+          543348,
+          20795,
+          3098
+        ],
+        [
+          102,
+          1100,
+          19344,
+          1604
+        ],
+        [
+          51,
+          248,
+          2660,
+          3888
+        ]
+      ],
+      "labels": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mean_iou_per_image": {
+        "crack": 0.4522739222041112,
+        "pore": 0.36355583918705786
+      },
+      "std_iou_per_image": {
+        "crack": 0.3096787278549786,
+        "pore": 0.2975176370169959
+      },
+      "seconds_total": 2505.0
+    }
+  }
+}

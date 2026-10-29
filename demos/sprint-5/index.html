@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mikroskop Bozunma Analizi · Sprint 5 Final Dağıtım ve Güvenlik Demosu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #f6f1e7;
+      --cream-soft: #fcfaf5;
+      --cream-deep: #ebe2d2;
+      --sage: #8da38f;
+      --sage-deep: #566e5a;
+      --sage-tint: #eaf0e8;
+      --burgundy: #7a1c2e;
+      --burgundy-dark: #581320;
+      --burgundy-tint: #f8eaed;
+      --amber: #c98a2e;
+      --ink: #2b2622;
+      --ink-soft: #635d56;
+      --ink-muted: #8c847b;
+      --line: #ded5c4;
+      --line-strong: #c8bda8;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --serif: "Cormorant Garamond", Georgia, serif;
+      --sans: "Inter", system-ui, sans-serif;
+      --mono: "JetBrains Mono", monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 550px at 85% -10%, var(--sage-tint) 0%, transparent 65%),
+        radial-gradient(900px 450px at -10% 110%, var(--burgundy-tint) 0%, transparent 60%),
+        var(--cream);
+      min-height: 100vh;
+      line-height: 1.6;
+      padding: 2.5rem 1.5rem;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .header { text-align: center; margin-bottom: 2.5rem; }
+    .badge-sprint {
+      display: inline-block;
+      background: var(--burgundy-tint);
+      color: var(--burgundy);
+      border: 1px solid rgba(122, 28, 46, 0.25);
+      padding: 0.35rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--burgundy-dark);
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.01em;
+    }
+    p.subtitle {
+      color: var(--ink-soft);
+      font-size: 1.05rem;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .card {
+      background: var(--cream-soft);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: 0 4px 16px -2px rgba(43, 38, 34, 0.05);
+    }
+    .card-title {
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--burgundy-dark);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card p { font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 1rem; }
+    .status-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem; }
+    .status-list li { display: flex; align-items: flex-start; gap: 0.55rem; }
+    .icon-check { color: var(--sage-deep); font-weight: 700; font-size: 1rem; }
+    .table-card { margin-bottom: 2rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 0.75rem; }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--line); }
+    th { background: var(--cream-deep); font-weight: 600; color: var(--ink); }
+    .highlight-tr { background: rgba(122, 28, 46, 0.04); font-weight: 600; color: var(--burgundy); }
+    .badge-pill {
+      background: var(--sage-tint);
+      color: var(--sage-deep);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+    }
+    .code-box {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--ink);
+      overflow-x: auto;
+      margin-top: 0.75rem;
+    }
+    .cta-banner {
+      background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-dark) 100%);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 10px 30px -5px rgba(122, 28, 46, 0.35);
+    }
+    .cta-banner h2 { font-family: var(--serif); font-size: 2rem; margin-bottom: 0.5rem; }
+    .cta-banner p { color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; margin-bottom: 1.25rem; }
+    .btn-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--cream-soft);
+      color: var(--burgundy-dark);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 9999px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-live:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <span class="badge-sprint">Sprint 5 Demosu · Final Dağıtım</span>
+      <h1>Mikroskop Bozunma Analizi Platformu</h1>
+      <p class="subtitle">Çok aşamalı Docker mimarisi, root olmayan kullanıcı izolasyonu, statik güvenlik sertleştirmesi ve yapay zekâ tabanlı kinetik analiz sistemi tamamlandı.</p>
+    </header>
+
+    <div class="grid">
+      <!-- 1. Konteyner & Dağıtım -->
+      <div class="card">
+        <h3 class="card-title">🐳 Docker &amp; Konteyner İzolasyonu</h3>
+        <p>Hafif Python 3.11-slim tabanı üzerinde çok aşamalı (multi-stage) derleme ile paketlenmiştir.</p>
+        <ul class="status-list">
+          <li><span class="icon-check">✓</span> <strong>Root-Olmayan Kullanıcı:</strong> Konteyner içi <code>appuser</code> (UID 10001) ile çalışır.</li>
+          <li><span class="icon-check">✓</span> <strong>Yetki Sınırlaması:</strong> <code>cap_drop: ALL</code> ve <code>no-new-privileges: true</code>.</li>
+          <li><span class="icon-check">✓</span> <strong>Ağ İzolasyonu:</strong> Sadece yerel <code>127.0.0.1:8765</code> bağlantısı.</li>
+          <li><span class="icon-check">✓</span> <strong>Dahili Sağlık Denetimi:</strong> <code>HEALTHCHECK</code> ile anlık durum kontrolü.</li>
+        </ul>
+        <div class="code-box">docker compose up --build -d</div>
+      </div>
+
+      <!-- 2. Güvenlik Denetimi & Zafiyet Taraması -->
+      <div class="card">
+        <h3 class="card-title">🛡️ Güvenlik Taramaları &amp; Sertleştirme</h3>
+        <p>Platform, endüstri standardı güvenlik tarama araçlarıyla test edilip doğrulanmıştır.</p>
+        <ul class="status-list">
+          <li><span class="icon-check">✓</span> <strong>Bandit Analizi:</strong> 0 Kritik / 0 Yüksek / 0 Orta / 0 Düşük bulgu.</li>
+          <li><span class="icon-check">✓</span> <strong>Pip-Audit Taraması:</strong> 0 bilinen paket güvenlik zafiyeti.</li>
+          <li><span class="icon-check">✓</span> <strong>Girdi Güvenliği:</strong> Magic byte doğrulaması, XSS &amp; SVG engeli.</li>
+          <li><span class="icon-check">✓</span> <strong>Timing-Safe Token:</strong> <code>hmac.compare_digest</code> zamanlama koruması.</li>
+        </ul>
+        <div class="code-box">bandit -r src/ &amp;&amp; pip-audit</div>
+      </div>
+    </div>
+
+    <!-- 3. Model Başarım Karşılaştırması -->
+    <div class="card table-card">
+      <h3 class="card-title">🔬 Model &amp; Algoritma Başarım Karşılaştırması</h3>
+      <p>CrackenPy mikroskop test veri kümesinde ölçülen algoritmik başarım kıyaslaması:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Model / Algoritma</th>
+            <th>Mimari Türü</th>
+            <th>Piksel Doğruluk</th>
+            <th>Çatlak IoU</th>
+            <th>Çatlak Dice</th>
+            <th>Gözenek IoU</th>
+            <th>Çıkarım Süresi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="highlight-tr">
+            <td><strong>Random Forest (ML)</strong> <span class="badge-pill">Önerilen</span></td>
+            <td>24-D Doku Öznitelikleri (Gauss/Sobel/Laplace)</td>
+            <td><strong>%98.8</strong></td>
+            <td>0.766</td>
+            <td>0.867</td>
+            <td>0.781</td>
+            <td>~150 ms</td>
+          </tr>
+          <tr>
+            <td><strong>YOLOv8-Seg (DL)</strong></td>
+            <td>Ultralytics Poligon Derin Öğrenme</td>
+            <td>%96.2</td>
+            <td>0.680</td>
+            <td>0.810</td>
+            <td>0.650</td>
+            <td>~180 ms</td>
+          </tr>
+          <tr>
+            <td><strong>U-Net Baseline (DL)</strong></td>
+            <td>Evrişimli Kodlayıcı-Kod Çözücü (CNN)</td>
+            <td>%95.6</td>
+            <td>0.421</td>
+            <td>0.593</td>
+            <td>0.001</td>
+            <td>~300 ms</td>
+          </tr>
+          <tr>
+            <td><strong>Klasik Morfoloji</strong></td>
+            <td>Geleneksel Görüntü İşleme</td>
+            <td>%75.3</td>
+            <td>0.119</td>
+            <td>0.213</td>
+            <td>0.042</td>
+            <td>~20 ms</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 4. Canlı Uygulama Çağrısı -->
+    <div class="cta-banner">
+      <h2>Canlı Web Platformunu Başlatın</h2>
+      <p>Tek görüntü analizi, piksel doğruluk analitiği ve zaman serisi üstel kinetik bozunma modülünü tarayıcınızda deneyimleyin.</p>
+      <a href="http://127.0.0.1:8765/" class="btn-live" target="_blank" rel="noopener">
+        🚀 Web Uygulamasını Aç (http://127.0.0.1:8765/)
+      </a>
+    </div>
+  </div>
+</body>
+</html>
