@@ -1,0 +1,7 @@
+# Mikroskop Optik Kalibrasyon Yapılandırması
+# Durum: PENDING (Laboratuvar stage micrometer ölçümü bekleniyor) veya MEASURED
+
+um_per_px: 1.25
+status: PENDING
+microscope: "Olympus BX53 - 20x Objective"
+notes: "Varsayılan yaklaşık optik ölçek. Laboratuvar kalibrasyon logu ile güncellenecektir."
