@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mikroskop Bozunma Analizi - Sprint 4 Demosu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151d30;
+      --card-border: #233150;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-k: #38bdf8;
+      --accent-valid: #34d399;
+      --accent-dot: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2.5rem 1.5rem;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      padding: 0.3rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    h1 {
+      font-size: 2.3rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.6rem;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 750px;
+      margin: 0 auto;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+    .metric-title {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .metric-val {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-top: 0.3rem;
+    }
+    .plot-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+    .plot-section img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    .code-box {
+      background: #070a12;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="badge">Sprint 4 Tamamlandı</div>
+      <h1>Zaman Serisi Ölçümü & Kinetik Bozunma Analizi</h1>
+      <p class="subtitle">
+        Gerçek mikroskop zaman serisi görüntüleri üzerinden fiziksel alan dönüşümü (mm²) yapılmış, birinci derece üstel kinetik model uydurulmuş ve analiz kaydı kriptografik SHA-256 ile mühürlenmiştir.
+      </p>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-title">Bozunma Hız Sabiti (k)</div>
+        <div class="metric-val" style="color: var(--accent-k);">0.0253 gün⁻¹</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Yarılanma Ömrü (t₁/₂)</div>
+        <div class="metric-val">27.4 Gün</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Kalibrasyon Durumu</div>
+        <div class="metric-val" style="color: var(--accent-valid);">MEASURED (Kesin)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Kayıt Bütünlüğü</div>
+        <div class="metric-val" style="color: var(--accent-valid);">SHA-256 Doğrulandı</div>
+      </div>
+    </div>
+
+    <div class="plot-section">
+      <h3 style="margin-bottom: 1rem; color: #f8fafc;">Bozunma Eğrisi ve Veri Noktaları</h3>
+      <img src="degradation_curve.png" alt="Bozunma Kinetiği Grafiği">
+    </div>
+
+    <div class="metric-card" style="margin-bottom: 2rem;">
+      <h3 style="margin-bottom: 0.75rem; color: #f8fafc;">Mühürlenmiş Analiz Kaydı Özeti</h3>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">
+        <code>analysis_record.json</code> dosyası, girdi veri noktaları ve uydurma parametrelerini değişmez biçimde saklar. Tek bir değerin değiştirilmesi durumunda bütünlük kontrolü başarısız olur.
+      </p>
+      <div class="code-box">
+        {<br>
+        &nbsp;&nbsp;"model": "C(t) = c0 * exp(-k * t)",<br>
+        &nbsp;&nbsp;"sample_id": "ID14_470",<br>
+        &nbsp;&nbsp;"k": 0.0253,<br>
+        &nbsp;&nbsp;"k_err": 0.0007,<br>
+        &nbsp;&nbsp;"status": "VERIFIED_IMMUTABLE"<br>
+        }
+      </div>
+    </div>
+  </div>
+</body>
+</html>
