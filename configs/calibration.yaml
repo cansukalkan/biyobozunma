@@ -1,4 +1,8 @@
-um_per_px: 1.300
-status: MEASURED
-microscope: "Olympus BX53 - 20x Objective"
-notes: "Laboratuvar stage micrometer kalibrasyon ölçümü tamamlandı (docs/calibration-log.md)."
+# Mikroskop Optik Kalibrasyon Yapılandırması
+# Durum: PENDING (Laboratuvar stage micrometer ölçümü bekleniyor) veya MEASURED
+# UYARI: status MEASURED yapılmadan önce docs/calibration-log.md gerçek ölçümlerle doldurulmalıdır.
+
+um_per_px: 1.0
+status: PENDING
+microscope: "Belirtilmedi"
+notes: "Yer tutucu ölçek. Gerçek stage micrometer ölçümü yapılana kadar tüm mm² değerleri provisional."
