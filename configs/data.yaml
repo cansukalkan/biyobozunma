@@ -1,0 +1,11 @@
+# YOLOv8/v11 Segmentasyon Veri Yapılandırması
+# CrackenPy veri seti için çatlak ve gözenek sınıfları
+
+path: data/yolo
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: crack
+  1: pore
