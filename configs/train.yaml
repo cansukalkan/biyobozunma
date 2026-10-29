@@ -1,0 +1,11 @@
+# YOLOv8/v11 Segmentasyon Eğitim Yapılandırması
+# Tekrarlanabilirlik ve deterministik eğitim için parametreler
+
+model_name: yolov8n-seg.pt
+epochs: 25
+imgsz: 640
+batch: 4
+seed: 42
+patience: 10
+lr0: 0.01
+optimizer: AdamW
